@@ -1,13 +1,31 @@
-import express from 'express';
+import express from "express";
+import * as bodyParser from "body-parser"; 
+import routes from './routes/index';
+import cors from "cors";
+import {errorHandler} from './middleware/errorHandler'
+import cookie from 'cookie-parser'
 
-const app = express();
-const port = 3000;
-app.get('/', (req, res) => {
-  res.send('Mi secca tanto nonzzz');
-});
-app.listen(port, err => {
-  if (err) {
-    return console.error(err);
+class ApplicationContainer {
+  public app: express.Application;
+
+  constructor() {
+    this.app = express(); 
+    this.config();
   }
-  return console.log(`server is listening on ${port}`);
-});
+
+  private config(): void {
+    
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({extended: false }));
+
+    this.app.use(cors());
+
+    this.app.use(cookie());
+    
+    this.app.use("/api", routes);
+
+    this.app.use(errorHandler);
+  }
+}
+
+export default new ApplicationContainer().app;

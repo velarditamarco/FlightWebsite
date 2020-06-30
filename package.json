@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/app.js",
   "scripts": {
-    "dev": "nodemon src/app.ts",
-    "start": "tsc && node dist/app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon src/server.ts",
+    "start": "tsc && node dist/server.js",
+    "test": "mocha -r ts-node/register test/*.spec.ts"
   },
   "author": "MARCO",
   "license": "ISC",
@@ -16,7 +16,24 @@
     "typescript": "^3.9.5"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/chai-http": "^4.2.0",
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cors": "^2.8.6",
+    "@types/express-jwt": "0.0.42",
+    "@types/jsonwebtoken": "^8.5.0",
+    "@types/mocha": "^7.0.2",
+    "@types/mongoose": "^5.7.28",
+    "bcryptjs": "^2.4.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "express-jwt": "^6.0.0",
+    "express-kun": "^1.0.24",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.20",
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.2"
   }

@@ -5,6 +5,8 @@ import cors from "cors";
 import {errorHandler} from './middleware/errorHandler'
 import cookie from 'cookie-parser'
 
+
+
 class ApplicationContainer {
   public app: express.Application;
 
@@ -25,6 +27,7 @@ class ApplicationContainer {
     this.app.use("/api", routes);
 
     this.app.use(errorHandler);
+
   }
 }
 

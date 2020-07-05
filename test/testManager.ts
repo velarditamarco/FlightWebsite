@@ -8,24 +8,21 @@ chai.use(chaiHttp);
 const expect = chai.expect;
 
  export class TestManager {
-    public chai : Chai.ChaiStatic;
+    protected chai : Chai.ChaiStatic;
 
-    public app : Express.Application;
+    protected app : Express.Application;
 
-    public ctx = dataContext ;
+    protected ctx = dataContext ;
+
+    private  userCredentials = {
+        email: 'sponge@bob.com', 
+        password: 'garyTheSnail'
+      }
 
     constructor(){
         this.chai = chai; 
         this.chai.use(chaiHttp);
         this.app = app;
-    }
-
-    public openConn():void{
-        this.ctx.Connect();
-    }
-
-    public closeConn():void{
-        this.ctx.disconnect();
     }
 }
 

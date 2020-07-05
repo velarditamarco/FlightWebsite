@@ -19,7 +19,7 @@ class FlightsController{
 
     public intializeRoutes() {
         this.router.get('/', this.Get);
-        this.router.get('/:id', authorizeAdminRole, this.GetByID);
+        this.router.get('/:id', this.GetByID);
         this.router.post('/',verifyToken, authorizeAdminRole, this.Create);
         this.router.put('/',verifyToken, authorizeAdminRole, this.Edit);
         this.router.delete('/:id',verifyToken, authorizeAdminRole, this.Delete);

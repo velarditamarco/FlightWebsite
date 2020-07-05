@@ -41,7 +41,7 @@ export class UserService implements IUserService{
         if (!bycript.compareSync(model.password, user.password))
             throw new customError(400, 'invalid password');
 
-        const token = jwt.sign({ sub: user._id }, config.secret);
+        const token = jwt.sign({ user : user}, config.secret);
 
         const response : AuthenticationResponse = {
             user : user.toJSON(),

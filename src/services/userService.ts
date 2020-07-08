@@ -1,6 +1,6 @@
-import { User, IUser } from "../models/user";
+import { User, IUser } from "../models/User";
 import config from "../helper/config";
-import customError from '../helper/customError'
+import CustomError from '../helper/customError'
 import bycript from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -17,7 +17,7 @@ class AuthenticationResponse {
 }
 
 export interface IUserService{
-    Get(): Promise<IUser[]>; 
+    Get(filter : object): Promise<IUser[]>; 
 
     GetBy(id : string): Promise<IUser>; 
 
@@ -36,10 +36,10 @@ export class UserService implements IUserService{
         const user = await User.findOne({email : model.email});
 
         if (!user) 
-            throw new customError(404, 'invalid Email');
+            throw new CustomError(404, 'invalid Email');
 
         if (!bycript.compareSync(model.password, user.password))
-            throw new customError(400, 'invalid password');
+            throw new CustomError(400, 'invalid password');
 
         const token = jwt.sign({ user : user}, config.secret);
 
@@ -56,7 +56,7 @@ export class UserService implements IUserService{
         const user = await User.findOne({email : model.email});
 
         if (user)
-            throw new customError(400,'user already registrated with this email : ' + model.email);
+            throw new CustomError(400,'user already registrated with this email : ' + model.email);
 
         const newUser : IUser = new User(model);
 
@@ -67,27 +67,32 @@ export class UserService implements IUserService{
     }
 
     public async Update(model: IUser): Promise<void> {
-        await User.findByIdAndUpdate(model._id, model);
+        const userToUpdate = await User.findByIdAndUpdate(model._id, model);
+
+        if (!userToUpdate)
+            throw new CustomError(404, 'User not found');
+
+        await userToUpdate;
     }
 
     public async Delete(id: string): Promise<void> {
         const user = await User.findByIdAndDelete(id);
 
         if (!user)
-            throw new customError(404, 'User not found');
+            throw new CustomError(404, 'User not found');
 
         await user;
     }
 
-    public async Get(): Promise<IUser[]> {
-        return await User.find();
+    public async Get(filter : object): Promise<IUser[]> {
+        return await User.find().where(filter).populate('flightsBooked').populate('hostelBooked');
     }
 
     public async GetBy(id : string): Promise<IUser>{
         const user = await User.findById(id);
 
         if (!user)
-            throw new customError(404, 'User not found');
+            throw new CustomError(404, 'User not found');
 
         return await user;
     }

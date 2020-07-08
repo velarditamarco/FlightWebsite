@@ -1,5 +1,6 @@
-import mongoose, {Schema, Document, HookNextFunction, Error} from 'mongoose'
-import { NextFunction, ErrorRequestHandler } from 'express';
+import mongoose, {Schema, Document} from 'mongoose'
+import {handleE11000} from '../middleware/errorHandler'
+
 
 export  interface IFlight extends Document{
     departurePlace : string,
@@ -20,15 +21,7 @@ const FlightSchema : Schema = new Schema({
     price : {type : String, required : true}
 })
 
-  let handleE11000 = function(error : any, doc : any, next : HookNextFunction ) {
-    if (error.name === 'MongoError' && error.code == 11000) {
-        let key = Object.keys(error.keyValue)[0]
-        let err = new mongoose.Error(`There is already a ${key} ${error.keyValue[key]} in database`); 
-      next(err);
-    } else {
-      next();
-    }
-  }; 
+  
   
 FlightSchema.post('save', handleE11000); 
 FlightSchema.post('findOneAndUpdate', handleE11000);

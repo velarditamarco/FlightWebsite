@@ -14,17 +14,18 @@ class UsersController{
     }
 
     public initializeRoute() : void{
+        this.router.get('/',verifyToken, this.Get);
+        this.router.get('/:id',verifyToken, this.GetById);
         this.router.post('/registration', this.Post);
         this.router.post('/authentication', this.Authenticate);
         this.router.put('/',verifyToken, this.Put);
         this.router.delete('/:id',verifyToken, this.Delete);
-        this.router.get('/',verifyToken, this.Get);
-        this.router.get('/:id',verifyToken, this.GetById);
-        this.router.put('/logout', this.logout);
     }
 
     public Get(req : Request, res: Response, next : NextFunction) : void{
-        _service.Get().then(users => res.json(users))
+        _service.Get(req.query)
+        .then(users => res.json(users))
+        .catch(err => next(err));
     }
 
     public GetById(req : Request, res: Response, next : NextFunction){
@@ -65,12 +66,6 @@ class UsersController{
         _service.Delete(req.params.id)
         .then(() => res.json('User deleted'))
         .catch(err => next(err));
-    }
-
-    public logout(req: Request, res : Response, next: NextFunction):void {
-        res.cookie('token', '');
-        res.cookie('role', '');
-        res.json('Logout');
     }
 }
 

@@ -1,5 +1,5 @@
 import { Flight, IFlight } from "../models/Flight";
-import customError from '../helper/customError'
+import CustomError from '../helper/customError'
 
 
 export interface IFlightsService{
@@ -17,23 +17,30 @@ export interface IFlightsService{
 export class FlightsService implements IFlightsService{
 
     public async Update(model: IFlight): Promise<void> {
-         await Flight.findByIdAndUpdate(model._id, model);
+         const flightToUpdate = await Flight.findByIdAndUpdate(model._id, model);
+
+         if (!flightToUpdate)
+            throw new CustomError(404, 'Flight not found');
+
+        await flightToUpdate;
     }
 
     public async Create(model : IFlight): Promise<void>{
         const flight = await Flight.findOne({code : model.code});
 
         if (flight)
-            throw new customError(400,'there is already a flight registrated with this code : ' + model.code);
+            throw new CustomError(400,'there is already a flight registrated with this code : ' + model.code);
         
-        await model.save();
+        const flightToCreate : IFlight = new Flight(model);
+
+        await flightToCreate.save();
     }
 
     public async Delete(id: string): Promise<void> {
         const user = await Flight.findByIdAndDelete(id);
 
         if (!user)
-            throw new customError(404, 'Flight not found');
+            throw new CustomError(404, 'Flight not found');
 
         await user;
     }
@@ -46,7 +53,7 @@ export class FlightsService implements IFlightsService{
         const user = await Flight.findById(id);
 
         if (!user)
-            throw new customError(404, 'Flight not found');
+            throw new CustomError(404, 'Flight not found');
 
         return await user;
     }

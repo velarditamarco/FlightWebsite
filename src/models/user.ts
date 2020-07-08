@@ -1,5 +1,5 @@
-import mongoose, {Schema, Document, HookNextFunction, Error} from 'mongoose'
-import { NextFunction, ErrorRequestHandler } from 'express';
+import mongoose, {Schema, Document} from 'mongoose'
+import { handleE11000} from '../middleware/errorHandler'
 
 export  interface IUser extends Document{
     name : string,
@@ -22,12 +22,15 @@ const UserSchema : Schema = new Schema({
     age : Number,
     cardDetails : {type : String, default : 'xxx'},
     flightsBooked : [{type : Schema.Types.ObjectId, ref : 'Flight'}],
-    flightsTerminated : [{type : Schema.Types.ObjectId, ref : 'Flight'}],
+    hostelBooked : [{type : Schema.Types.ObjectId, ref : 'Hostel'}],
     password : {type : String, required : true, minlength : 6},
-    role : {type: String, required : true},
+    role : {type: String, default : 'USER'},
     registrationDate: { type: Date, default: Date.now }
     
 })
+
+UserSchema.post('save', handleE11000); 
+UserSchema.post('findOneAndUpdate', handleE11000);
 
 export const User = mongoose.model<IUser>('User', UserSchema);
 
